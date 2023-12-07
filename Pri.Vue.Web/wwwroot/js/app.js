@@ -9,7 +9,12 @@ let app = new Vue({
         categories: null,
         loading: false,
         hasError: false,
+        isLoggedIn: false,
         errorMessage: "",
+        loginDto: {
+            username: "",
+            password: "",
+        },
         productsVisible: false,
         products: null,
         product: {
@@ -20,6 +25,12 @@ let app = new Vue({
             image: null,
         }
         
+    },
+    created: function (){
+        //check if there is a token
+        if (sessionStorage.getItem('token') !== null) {
+            this.isLoggedIn = true;
+        }
     },
     methods: {
         getCategories: async function () {
@@ -75,5 +86,35 @@ let app = new Vue({
         hideProductInfo: function () {
             $('#productInfo').modal('hide');
         },
+        login: async function () {
+            this.loading = true;
+            this.hasError = false;
+            this.errorMessage = "";
+            //validate form
+            if (this.loginDto.username === "" || this.loginDto.password === "") {
+                this.hasError = true;
+                this.errorMessage = "Please provide credentials!";
+            }
+            else {
+                const url = `${this.baseUrl}/account/login`;
+                const token = await axios.post(url, this.loginDto)
+                    .then(response => response.data)
+                    .catch(error => {
+                        this.hasError = true;
+                        this.errorMessage = "Please provide correct credentials";
+                    })
+                    .finally(() => { this.loading = false });
+                if (token !== undefined) {
+                    //store the token in the browser
+                    sessionStorage.setItem("token", token);
+                    this.isLoggedIn = true;
+                }
+            }
+        },
+        logout: function () {
+            //simulate the logout => remove the token
+            sessionStorage.removeItem('token');
+            this.isLoggedIn = false;
+        }
     },
 });

@@ -82,7 +82,7 @@ namespace Pri.Drinks.Api
                         //superadmin = User + Admin
                         if (context.User.HasClaim(ClaimTypes.Role, "User")
                         || context.User.HasClaim(ClaimTypes.Role, "Admin")
-                        ) 
+                        )
                         {
                             return true;
                         }
