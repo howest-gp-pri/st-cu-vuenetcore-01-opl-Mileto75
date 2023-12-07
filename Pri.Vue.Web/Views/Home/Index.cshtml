@@ -1,0 +1,82 @@
+﻿
+<div id="app" class="row">
+    <div v-if="loading" class="col col-lg-3 mx-auto">
+        <div class="spinner-border" role="status">
+            <span class="sr-only"></span>
+        </div>
+    </div>
+    <div v-else>
+        <div class="row">
+            <div class="col col-lg-3 mx-auto">
+                <h5>{{pageTitle}}</h5>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col col-lg-3 mx-auto">
+                <button v-on:click="getCategories" class="btn btn-outline-info">Categories</button>
+                <button v-on:click="getProducts()" class="btn btn-outline-info">Products</button>
+            </div>
+         </div>
+         @* categories view *@
+        <div v-if="categoriesVisible" class="row">
+            <div v-if="hasError" class="alert alert-danger">
+                {{errorMessage}}
+            </div>
+            <div v-for="category in categories" class="col col-lg-3 m-3 text-center">
+                <div class="card" style="width: 18rem;">
+                    <div class="card-body">
+                        <h5 class="card-title">{{category.name}}</h5>
+                        <button v-on:click="getProducts(category.id)" class="btn btn-primary">Show products</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        @* products view *@
+        <div v-if="productsVisible" class="row">
+            <div v-for="product in products" class="col col-lg-3 m-3">
+                <div class="card" style="width: 18rem;">
+                    <img v-bind:src="product.image" class="card-img-top img-fluid" v-bind:alt="product.name">
+                    <div class="card-body">
+                        <h5 class="card-title">{{product.name}}</h5>
+                        <h6 class="card-subtitle mb-2 text-muted">&euro; {{product.price}}</h6>
+                        <div class="text-center">
+                        <button v-on:click="showProductInfo(product.id)" class="btn btn-primary">Info</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        @* product info modal *@
+    <div class="modal fade" id="productInfo" tabindex="-1" role="dialog" aria-labelledby="myModal-label" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="myModalTitle">Product info</h5>
+                    <button type="button" v-on:click="hideProductInfo" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <!--Modal content-->
+                    <div class="card">
+                        <img v-bind:src="product.image" class="card-img-top img-fluid" v-bind:alt="product.name">
+                        <div class="card-body">
+                            <h5 class="card-title">{{product.name}}</h5>
+                            <h6 class="card-subtitle mb-2 text-muted">{{product.category}}</h6>
+                            <h6 class="card-subtitle mb-2 text-muted">&euro; {{product.price}}</h6>
+                            <span class="card-subtitle mb-2" v-for="property in product.properties">{{property}} </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" v-on:click="hideProductInfo" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+@*End of vue app instance  *@
+</div>
+
+
+<script src="~/js/app.js"></script>
